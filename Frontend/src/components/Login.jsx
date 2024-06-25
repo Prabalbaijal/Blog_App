@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import back from "../assets/back.jpeg"
+import axios from "axios"
+import toast from 'react-hot-toast'
 
 
 function Login() {
@@ -7,14 +9,15 @@ function Login() {
     const [registeruser, setRegisterUser] = useState({
         name: "",
         username: "",
-        password: ""
+        password: "",
+        confirmPassword:""
     })
 
     const togglepage = () => {
         page === 'register' ? toggle('login') : toggle('register')
     }
 
-    const onSubmitHandler = async (e) => {
+    const SignupSubmitHandler = async (e) => {
         e.preventDefault()
         try {
             const res = await axios.post('http://localhost:9000/signup', registeruser, {
@@ -23,7 +26,10 @@ function Login() {
                 },
                 withCredentials: true
             })
-
+            if (res.data.success) {
+                toggle('login')
+                toast.success(res.data.message)
+              }
         } catch (error) {
             toast.error(error.response.data.message)
             console.log(error)
@@ -32,14 +38,14 @@ function Login() {
             name: "",
             username: "",
             password: "",
+            confirmPassword:""
         })
-        toggle('login')
     }
 
     return (
         <div className='relative flex items-center h-screen m-0 bg-repeat'>
             <div className=''>
-                <img src="https://st3.depositphotos.com/3591429/13269/i/450/depositphotos_132694218-stock-photo-woman-writing-notes-in-diary.jpg" className='h-screen w-[60vw]' />
+                <img src={back} className='h-screen w-[60vw]' />
             </div>
             {
                 page === 'login' ?
@@ -103,7 +109,7 @@ function Login() {
                                 <form action="" onSubmit={SignupSubmitHandler} className='flex flex-col gap-5'>
                                     <div className='flex justify-around gap-11'>
                                         <label className="flex items-center gap-2 bg-white input input-bordered w-96">
-                                            <input type="text" className="grow" placeholder="Enter Full Name" onChange={(e) => setUser({ ...registeruser, name: e.target.value })} />
+                                            <input type="text" className="grow" placeholder="Enter Full Name"  value={registeruser.name} onChange={(e) => setRegisterUser({ ...registeruser, name: e.target.value })} />
                                         </label>
                                     </div>
                                     <div className='flex justify-around gap-11'>
@@ -116,7 +122,7 @@ function Login() {
                                                 <path
                                                     d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
                                             </svg>
-                                            <input type="text" className="grow" placeholder="Username " onChange={(e) => setUser({ ...registeruser, username: e.target.value })} />
+                                            <input type="text" className="grow" placeholder="Username " value={registeruser.username} onChange={(e) => setRegisterUser({ ...registeruser, username: e.target.value })} />
                                         </label>
                                     </div>
                                     <div className='flex justify-around gap-11'>
@@ -131,9 +137,25 @@ function Login() {
                                                     d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
                                                     clipRule="evenodd" />
                                             </svg>
-                                            <input type="password" className="grow" placeholder="Create a Password" onChange={(e) => setUser({ ...registeruser, password: e.target.value })} />
+                                            <input type="password" className="grow" placeholder="Create a Password"  value={registeruser.password} onChange={(e) => setRegisterUser({ ...registeruser, password: e.target.value })} />
                                         </label>
                                     </div>
+                                    <div className='flex justify-around gap-11'>
+                                        <label className="flex items-center gap-2 bg-white input input-bordered w-96">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 16 16"
+                                                fill="currentColor"
+                                                className="w-4 h-4 opacity-70">
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                                                    clipRule="evenodd" />
+                                            </svg>
+                                            <input type="password" className="grow" placeholder="Confirm Password"  value={registeruser.confirmPassword} onChange={(e) => setRegisterUser({ ...registeruser, confirmPassword: e.target.value })} />
+                                        </label>
+                                    </div>
+
 
                                     <div className='text-center underline cursor-pointer' onClick={() => togglepage()}>
                                         Already have an Account? Sign in
